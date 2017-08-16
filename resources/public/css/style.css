@@ -1,0 +1,67 @@
+@font-face {
+    font-family: gilroy;
+    src: url(../fonts/Gilroy-Regular.otf);
+}
+
+:root {
+    --orange-tint: #ff7950;
+}
+
+body {
+    background-color: #121212;
+}
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+}
+
+.text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.slide.logo {
+    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.reveal .slides > section {
+    padding: 0px;
+}
+
+.reveal section img {
+    border: 0px;
+    margin: auto;
+    box-shadow: none;
+}
+
+.slide p {
+    color: var(--orange-tint);
+    font-family: gilroy;
+    opacity: 0;
+    transition: opacity 4000ms;
+}
+
+.slide p.visible {
+    opacity: 1;
+}
+
+object {
+    pointer-events: none;
+}
+
+.reveal .controls .navigate-left,
+.reveal .controls .navigate-left.enabled {
+    border-right-color: var(--orange-tint);
+}
+
+.reveal .controls .navigate-right,
+.reveal .controls .navigate-right.enabled {
+    border-left-color: var(--orange-tint);
+}

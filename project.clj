@@ -47,6 +47,7 @@
                 :compiler {:output-to "resources/public/js/compiled/taiste_presentation.js"
                            :main taiste-presentation.core
                            :optimizations :advanced
+                           :externs ["resources/public/js/reveal.js"]
                            :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"

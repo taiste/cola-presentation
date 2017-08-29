@@ -18,6 +18,7 @@
 (defn reveal-slides []
   [:div.reveal
     [:div.slides
+      ;Intro
       [:section {:data-state "logo"}
         [:div {:class "slide logo"}
           [:img {:src "img/logo.jpg"}]]]
@@ -26,11 +27,21 @@
           [:p.intro-text "Maisteltiin Colaa."]]]
       [:section {:data-state "paths"}
         [:div.taistePaths]]
+      ;Drinks
+      [:section {:data-state "score-intro"}
+        [:div {:class "slide text-container"}
+          [:p.score-text "Juomien pisteet"]]]
       [:section {:data-state "score"}
         [:div.colaScore]]
+      ;Drinkers
+      [:section {:data-state "histogram-intro"}
+        [:div {:class "slide text-container"}
+          [:p.histogram-text "Juojien pisteet"]]]
+      [:section {:data-state "histogram"}
+        [:div.colaHistogram]]
       [:section {:data-state "outro"}
         [:div {:class "slide text-container"}
-          [:p.outro-text "Yllätys?"]]]]])
+          [:p.outro-text "Onnea Fossa!"]]]]])
 
 (defn main-page []
   [reveal-slides])
@@ -48,8 +59,11 @@
                                    :maxScale 1
                                    :viewDistance 3}))
   (.addEventListener js/Reveal "intro" #(.add (.-classList (aget (.getElementsByClassName js/document "intro-text") 0)) "visible"))
+  (.addEventListener js/Reveal "score-intro" #(.add (.-classList (aget (.getElementsByClassName js/document "score-text") 0)) "visible"))
+  (.addEventListener js/Reveal "histogram-intro" #(.add (.-classList (aget (.getElementsByClassName js/document "histogram-text") 0)) "visible"))
   (.addEventListener js/Reveal "outro" #(.add (.-classList (aget (.getElementsByClassName js/document "outro-text") 0)) "visible"))
   (.addEventListener js/Reveal "paths" #(set! (.-innerHTML (aget (.getElementsByClassName js/document "taistePaths") 0)) "<object class='slide' type='text/html' data='taistePaths/index.html' ></object>"))
-  (.addEventListener js/Reveal "score" #(set! (.-innerHTML (aget (.getElementsByClassName js/document "colaScore") 0)) "<object class='slide' type='text/html' data='colaMaistelu/index.html' ></object>")))
+  (.addEventListener js/Reveal "score" #(set! (.-innerHTML (aget (.getElementsByClassName js/document "colaScore") 0)) "<object class='slide' type='text/html' data='colaMaistelu/index.html' ></object>"))
+  (.addEventListener js/Reveal "histogram" #(set! (.-innerHTML (aget (.getElementsByClassName js/document "colaHistogram") 0)) "<object class='slide' type='text/html' data='colaMaisteluHistogram/index.html' ></object>")))
 
 (main!)

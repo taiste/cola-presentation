@@ -12,4 +12,6 @@ pom.xml
 .repl
 .nrepl-port
 /resources/public/colaMaistelu
+/resources/public/colaMaisteluHistogram
+/resources/public/colaMaisteluScatter
 /resources/public/taistePaths

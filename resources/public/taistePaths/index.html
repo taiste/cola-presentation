@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3JS</title>
+        <meta charset="utf-8">
+        <style>
+            @font-face {
+                font-family: gilroy;
+                src: url(Gilroy-Regular.otf);
+            }
+
+            html, body {
+                margin: 0px;
+                padding: 0px;
+                background-color: #121212;
+                font-family: gilroy;
+            }
+
+            #main svg {
+                fill: none;
+                stroke: #d85fff;
+                display: block;
+                margin: auto;
+            }
+
+            .horizontalAxis text {
+                fill: #fcd900;
+                stroke: #fcd900;
+                font-family: gilroy;
+            }
+
+            .horizontalAxis .domain {
+                stroke: #fcd900;
+            }
+
+            .horizontalAxis line {
+                stroke: transparent;
+            }
+
+            .verticalAxis text {
+                fill: #fcd900;
+                stroke: #fcd900;
+                font-family: gilroy;
+            }
+
+            .verticalAxis .domain {
+                stroke: #fcd900;
+            }
+
+            .verticalAxis line {
+                stroke: transparent;
+            }
+        </style>
+        <script src="d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div id="main">
+        </div>
+
+        <script>
+            function togglePath(path, visible, totalLength, delay = 0, duration = transitionDuration) {
+                var length = visible ? totalLength : 0;
+                path.transition()
+                    .duration(duration)
+                    .delay(delay)
+                    .ease(easeType)
+                    .attr("stroke-dashoffset", length);
+            }
+
+            function togglePaths(paths) {
+                var duration = transitionDuration;
+                if(pathVisible) {
+                    duration = duration / 1.6;
+                }
+                togglePath(paths[0], pathVisible, paths[0].node().getTotalLength(), 0, duration);
+                togglePath(paths[1], pathVisible, paths[1].node().getTotalLength(), 430, duration - 256);
+                togglePath(paths[2], pathVisible, paths[2].node().getTotalLength(), 120, duration + 128);
+                pathVisible = !pathVisible;
+            }
+
+            function createLine(data, curve) {
+                var scale = getScale(data);
+                return line = d3.line()
+                    .curve(curve)
+                    .x(function(d) { return scale.xScale(d.date); })
+                    .y(function(d) { return scale.yScale(d.value); });
+            }
+
+            function createPath(svg, line, data, color) {
+                return svg.append("path")
+                    .datum(data)
+                    .attr("stroke-width", padding)
+                    .attr("stroke", color)
+                    .attr("shape-rendering", "geometricPrecision")
+                    .attr("d", line);
+            }
+
+            function createTransition(path, totalLength) {
+                path.attr("stroke-dasharray", (totalLength, totalLength))
+                    .attr("stroke-dashoffset", totalLength);
+            }
+
+            function getScale(data) {
+                var x = d3.scaleTime()
+                    .domain(
+                        [d3.min(data, function(d) { return d.date; }),
+                         d3.max(data, function(d) { return d.date; })])
+                    .rangeRound([-padding, width + padding]);
+
+                var y = d3.scaleLinear()
+                    .domain(
+                        [d3.min(data, function(d) { return d.value; }),
+                         d3.max(data, function(d) { return d.value + 1; })])
+                    .rangeRound([(height - padding * 3), (padding)]);
+
+                return {xScale: x, yScale: y};
+            }
+
+            function main() {
+                var svg = d3.select("#main")
+                            .append("svg")
+                            .attr("width", width)
+                            .attr("height", height);
+
+                var path = createPath(svg, createLine(data[0], d3.curveBasis), data[0], "#d85fff");
+                createTransition(path, path.node().getTotalLength());
+
+                var path2 = createPath(svg, createLine(data[1], d3.curveBasis), data[1], "#ff7950");
+                createTransition(path2, path2.node().getTotalLength());
+
+                var path3 = createPath(svg, createLine(data[2], d3.curveBasis), data[2], "#4edd89");
+                createTransition(path3, path3.node().getTotalLength());
+
+                svg.append("g")
+                    .attr("class", "horizontalAxis")
+                    .attr("transform", "translate(0," + (height - padding * 2) + ")")
+                    .call(d3.axisBottom(getScale(data[0]).xScale));
+
+                svg.append("g")
+                    .attr("class", "verticalAxis")
+                    .attr("transform", "translate(" + padding * 2 + ", 0)")
+                    .call(d3.axisLeft(getScale(data[0]).yScale))
+                  .append("text")
+                    .attr("text-anchor", "end")
+                    .attr("transform", "rotate(-90)");
+
+                /*svg.on("click", function() {
+                    togglePaths([path, path2, path3]);
+                })*/;
+
+                window.setInterval(function() {
+                    togglePaths([path, path2, path3]);
+                }, transitionDuration * 1.2)
+                togglePaths([path, path2, path3]);
+            }
+
+            var data = [[
+               {date: new Date(2007, 3, 24), value: 93.24},
+               {date: new Date(2007, 3, 25), value: 95.35},
+               {date: new Date(2007, 3, 26), value: 98.84},
+               {date: new Date(2007, 3, 27), value: 99.92},
+               {date: new Date(2007, 3, 30), value: 99.80},
+               {date: new Date(2007, 4,  1), value: 99.47},],
+              [{date: new Date(2007, 3, 24), value: 99.24},
+               {date: new Date(2007, 3, 25), value: 94.35},
+               {date: new Date(2007, 3, 26), value: 96.84},
+               {date: new Date(2007, 3, 27), value: 94.92},
+               {date: new Date(2007, 3, 30), value: 97.80},
+               {date: new Date(2007, 4,  1), value: 94.47},],
+              [{date: new Date(2007, 3, 24), value: 98.24},
+               {date: new Date(2007, 3, 25), value: 94.35},
+               {date: new Date(2007, 3, 26), value: 94.84},
+               {date: new Date(2007, 3, 27), value: 94.92},
+               {date: new Date(2007, 3, 30), value: 97.80},
+               {date: new Date(2007, 4,  1), value: 94.47},]
+            ];
+
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            var transitionDuration = 1800;
+            var pathVisible = false;
+            var easeType = d3.easeCubicInOut;
+            var padding = 16;
+
+            main();
+        </script>
+    </body>
+</html>

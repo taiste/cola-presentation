@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3JS</title>
+        <meta charset="utf-8">
+        <style>
+            @font-face {
+                font-family: gilroy;
+                src: url(Gilroy-Regular.otf);
+            }
+
+            html, body {
+                margin: 0px;
+                padding: 0px;
+                background-color: #121212;
+                font-family: gilroy;
+            }
+
+            #main svg {
+                fill: #d85fff;
+                stroke: #d85fff;
+                display: block;
+                margin: auto;
+            }
+
+            svg rect {
+                fill: transparent;
+                stroke: transparent;
+            }
+
+            svg .bar-3 rect {
+                fill: #4edd89;
+                stroke: #4edd89;
+            }
+
+            svg .bar-5 rect {
+                fill: #d85fff;
+                stroke: #d85fff;
+            }
+
+            svg text {
+                fill: #fff;
+                stroke: #fff;
+                font-size: 12pt;
+            }
+
+            .title {
+                font-size: 16pt;
+            }
+
+            .horizontalAxis text {
+                fill: #ff7950;
+                stroke: #ff7950;
+                font-family: gilroy;
+            }
+
+            .horizontalAxis .domain {
+                stroke: #ff7950;
+            }
+
+            .horizontalAxis line {
+                stroke: transparent;
+            }
+
+            .verticalAxis text {
+                fill: #ff7950;
+                stroke: #ff7950;
+            }
+
+            .verticalAxis .domain {
+                stroke: #ff7950;
+            }
+
+            .verticalAxis line {
+                stroke: transparent;
+            }
+        </style>
+        <script src="d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div id="main">
+        </div>
+
+        <script>
+            function charts(svg, data) {
+                var x = d3.scaleLinear()
+                            .domain([0, d3.max(data, function(d) { return d.ppl + 1; })])
+                            .range([(width / 10) / 2, width - padding * 2]);
+
+                var y = d3.scaleLinear()
+                            .domain([0, 5])
+                            .range([height - padding, padding]);
+
+                var node = svg.selectAll("scatter-dots")
+                    .data(data)
+                    .enter()
+                    .append("g");
+
+                node.append("circle")
+                    .attr("cx", function(d) { return x(d.ppl); })
+                    .attr("cy", function(d) {return y(d.score); })
+                    .attr("r", padding / 2)
+                    .style("opacity", 0)
+                    .transition()
+                      .duration(transitionDuration)
+                      .delay(transitionDuration * 1.1)
+                      .style("opacity", 1);
+
+                node.append("text")
+                    .attr("x", function(d) { return x(d.ppl) + padding; })
+                    .attr("y", function(d) { return y(d.score) - padding / 4; })
+                    .text(function(d) { return d.name; })
+                    .style("opacity", 0)
+                    .transition()
+                      .duration(transitionDuration)
+                      .delay(transitionDuration * 1.8)
+                      .style("opacity", 1);
+
+                svg.append("g")
+                    .attr("class", "verticalAxis")
+                    .attr("transform", "translate(" + padding * 4 + ", 0)")
+                    .call(d3.axisLeft(y).ticks(5));
+
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", padding / 2)
+                    .attr("x", (-height / 2) + padding * 2)
+                    .attr("height", height)
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Score");
+
+                svg.append("g")
+                  .attr("class", "horizontalAxis")
+                  .attr("transform", "translate(0," + (height - (padding * 3)) + ")")
+                  .call(d3.axisBottom(x));
+
+                svg.append("text")
+                    .attr("transform", "translate(" + ((width / 2) - padding) + "," + (height - (padding)) + ")")
+                    .attr("width", width)
+                    .text("Euro per Litre (€)");
+
+                svg.append("text")
+                    .attr("class", "title")
+                    .attr("transform", "translate(" + ((width / 2)) + "," + padding * 3 + ")")
+                    .style("text-anchor", "middle")
+                    .text("Bang for the buck");
+            }
+
+            function main() {
+                var svg = d3.select("#main")
+                            .append("svg")
+                            .attr("width", width)
+                            .attr("height", height);
+
+                var data = d3.csv("scores.csv", function(d) {
+                    d.score = +d.score;
+                    d.ppl = +d.ppl;
+                    return d;
+                }, function(error, data) {
+                    if(error)
+                    {
+                        throw error;
+                    }
+                    charts(svg, data);
+                });
+            }
+
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            var transitionDuration = 1200;
+            var pathVisible = false;
+            var easeType = d3.easeCubicInOut;
+            var padding = 16;
+
+            main();
+        </script>
+    </body>
+</html>

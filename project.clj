@@ -1,6 +1,6 @@
-(defproject taiste-presentation "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+(defproject taiste-presentation "0.1.0"
+  :description "Just reveal.jsing some stuff"
+  :url "taiste.fi"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
